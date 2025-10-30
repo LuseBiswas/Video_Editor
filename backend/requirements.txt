@@ -16,6 +16,7 @@ docstring_parser==0.17.0
 ecdsa==0.19.1
 fastapi==0.109.0
 ffmpeg-python==0.2.0
+openai-whisper==20231117
 frozenlist==1.8.0
 future==1.0.0
 h11==0.16.0

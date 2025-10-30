@@ -18,6 +18,7 @@ class SubtitleState(TypedDict):
     font_size: Optional[int]
     color: Optional[str]
     position: Optional[str]
+    auto_generate: Optional[bool]  # New field to indicate if subtitles should be auto-generated
     error: Optional[str]
 
 
@@ -32,7 +33,8 @@ def parse_prompt_with_llm(state: SubtitleState) -> SubtitleState:
     
     system_prompt = f"""You are a subtitle parameter extractor. 
 Extract subtitle information from the user's prompt and return a JSON object with these fields:
-- text: The subtitle text (required)
+- text: The subtitle text (if explicitly provided by user, otherwise null)
+- auto_generate: true if user wants auto-generated subtitles from audio, false otherwise
 - start_time: Start time in seconds (default: 0)
 - end_time: End time in seconds (default: video_duration or start_time + 5)
 - font_size: Font size in pixels (default: 24)
@@ -42,9 +44,11 @@ Extract subtitle information from the user's prompt and return a JSON object wit
 Video duration is: {state['video_duration']} seconds
 
 Examples:
-- "add subtitle 'Hello World' at 5 seconds, 26px, red" -> {{"text": "Hello World", "start_time": 5, "end_time": 10, "font_size": 26, "color": "red", "position": "bottom"}}
-- "show 'Welcome' in blue, 30px at top" -> {{"text": "Welcome", "start_time": 0, "end_time": 5, "font_size": 30, "color": "blue", "position": "top"}}
-- "add 'Testing' from 2 to 8 seconds" -> {{"text": "Testing", "start_time": 2, "end_time": 8, "font_size": 24, "color": "white", "position": "bottom"}}
+- "add subtitle 'Hello World' at 5 seconds, 26px, red" -> {{"text": "Hello World", "auto_generate": false, "start_time": 5, "end_time": 10, "font_size": 26, "color": "red", "position": "bottom"}}
+- "make subtitle of green color in 36px" -> {{"text": null, "auto_generate": true, "start_time": 0, "end_time": {state['video_duration']}, "font_size": 36, "color": "green", "position": "bottom"}}
+- "generate subtitles in red, 30px" -> {{"text": null, "auto_generate": true, "start_time": 0, "end_time": {state['video_duration']}, "font_size": 30, "color": "red", "position": "bottom"}}
+- "add subtitles from audio, blue color" -> {{"text": null, "auto_generate": true, "start_time": 0, "end_time": {state['video_duration']}, "font_size": 24, "color": "blue", "position": "bottom"}}
+- "show 'Welcome' in blue, 30px at top" -> {{"text": "Welcome", "auto_generate": false, "start_time": 0, "end_time": 5, "font_size": 30, "color": "blue", "position": "top"}}
 
 Return ONLY valid JSON, nothing else."""
 
@@ -58,6 +62,7 @@ Return ONLY valid JSON, nothing else."""
         result = json.loads(response.content)
         
         state["text"] = result.get("text")
+        state["auto_generate"] = result.get("auto_generate", False)
         state["start_time"] = result.get("start_time", 0)
         state["end_time"] = result.get("end_time", state["start_time"] + 5)
         state["font_size"] = result.get("font_size", 24)
@@ -74,8 +79,9 @@ Return ONLY valid JSON, nothing else."""
 def validate_parameters(state: SubtitleState) -> SubtitleState:
     """Validate extracted parameters"""
     
-    if not state.get("text"):
-        state["error"] = "No subtitle text found in prompt"
+    # If not auto-generate, text must be provided
+    if not state.get("auto_generate") and not state.get("text"):
+        state["error"] = "No subtitle text found in prompt and auto_generate is false"
         return state
     
     # Ensure end_time is after start_time
@@ -135,6 +141,7 @@ def parse_subtitle_prompt(prompt: str, video_duration: float) -> dict:
         font_size=None,
         color=None,
         position=None,
+        auto_generate=None,
         error=None
     )
     
@@ -145,6 +152,7 @@ def parse_subtitle_prompt(prompt: str, video_duration: float) -> dict:
     
     return {
         "text": result["text"],
+        "auto_generate": result["auto_generate"],
         "start_time": result["start_time"],
         "end_time": result["end_time"],
         "font_size": result["font_size"],

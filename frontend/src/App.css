@@ -1,42 +1,236 @@
-#root {
-  max-width: 1280px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  color: white;
+  margin-bottom: 30px;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.video-name {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 20px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+}
+
+.left-panel,
+.right-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Video Uploader */
+.video-uploader h2,
+.chat-interface h2,
+.video-preview h2 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.3rem;
+}
+
+.video-uploader input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  border: 2px dashed #667eea;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.loading {
+  color: #667eea;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.error {
+  color: #e74c3c;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* Chat Interface */
+.chat-interface {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-messages {
+  flex: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background: #f9f9f9;
+}
+
+.hint {
+  color: #999;
+  font-style: italic;
+  text-align: center;
+  padding: 20px;
+}
+
+.message {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.message.user {
+  background: #e3f2fd;
+  text-align: right;
+}
+
+.message.bot {
+  background: #f1f8e9;
+}
+
+.message.error {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.subtitle-info {
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.subtitle-info small {
+  color: #666;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.chat-input input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.chat-input button {
+  padding: 12px 25px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.chat-input button:hover:not(:disabled) {
+  background: #5568d3;
+}
+
+.chat-input button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Export Button */
+.export-section {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.export-button {
+  padding: 15px 40px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  width: 100%;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.export-button:hover:not(:disabled) {
+  background: #229954;
+}
+
+.export-button:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+/* Video Preview */
+.video-preview {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.video-preview video {
+  width: 100%;
+  border-radius: 8px;
+  background: #000;
+  max-height: 600px;
+}
+
+.video-preview p {
+  text-align: center;
+  color: #999;
+  padding: 50px;
+  font-size: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .container {
+    grid-template-columns: 1fr;
   }
-  to {
-    transform: rotate(360deg);
+  
+  header h1 {
+    font-size: 1.8rem;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

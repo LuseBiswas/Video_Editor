@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Environment variables
+.env
+
+# Uploads and outputs
+uploads/
+outputs/
+*.mp4
+*.avi
+*.mov
+*.srt
+*.ass
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
